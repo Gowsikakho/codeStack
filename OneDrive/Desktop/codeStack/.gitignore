@@ -1,0 +1,8 @@
+# Ignore VSCode settings
+.vscode/
+
+# Ignore executables
+*.exe
+
+# Ignore build outputs
+build/
