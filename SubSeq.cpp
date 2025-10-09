@@ -1,11 +1,13 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
 using namespace std;
 
 // 🔹 Recursive function to generate all subsequences
-void generateSubsequences(string s, string current, int index, vector<string> &result) {
-    // Base case: when we reach the end of the string
+void generateSubsequences(const string &s, string current, int index, vector<string> &result) {
     if (index == s.size()) {
-        result.push_back(current);
+        result.push_back(current); // add current subsequence
         return;
     }
 
@@ -24,9 +26,18 @@ int main() {
     vector<string> subsequences;
     generateSubsequences(s, "", 0, subsequences);
 
+    // Optional: sort the subsequences alphabetically
+    sort(subsequences.begin(), subsequences.end());
+
     cout << "\nAll Subsequences:\n";
-    for (auto &sub : subsequences)
-        cout << (sub.empty() ? "'' (empty)" : sub) << "\n";
+    for (const auto &sub : subsequences) {
+        if (sub.empty())
+            cout << "'' (empty)\n";
+        else
+            cout << sub << "\n";
+    }
+
+    cout << "\nTotal subsequences: " << subsequences.size() << endl;
 
     return 0;
 }
