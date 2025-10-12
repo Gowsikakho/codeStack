@@ -45,10 +45,19 @@ void initFactorials(int n=MAXN){
     for(int i=n;i>0;i--) invFact[i-1]=(invFact[i]*i)%MOD;
 }
 
-ll nCr(int n,int r){
-    if(r<0||r>n) return 0;
-    return fact[n]*invFact[r]%MOD*invFact[n-r]%MOD;
+const int N = 1e6+5;
+long long fact[N], invfact[N];
+void precompute(){
+    fact[0]=1;
+    for(int i=1;i<N;i++) fact[i] = fact[i-1]*i % MOD;
+    invfact[N-1] = mod_inv(fact[N-1], MOD);
+    for(int i=N-2;i>=0;i--) invfact[i] = invfact[i+1]*(i+1) % MOD;
 }
+long long nCr(int n,int r){
+    if(r<0 || r>n) return 0;
+    return fact[n]*invfact[r]%MOD*invfact[n-r]%MOD;
+}
+
 
 // ---------- Divisors ----------
 vi divisors(int n){
