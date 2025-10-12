@@ -50,7 +50,7 @@ long long fact[N], invfact[N];
 void precompute(){
     fact[0]=1;
     for(int i=1;i<N;i++) fact[i] = fact[i-1]*i % MOD;
-    invfact[N-1] = mod_inv(fact[N-1], MOD);
+    invfact[N-1] = modinv(fact[N-1], MOD);
     for(int i=N-2;i>=0;i--) invfact[i] = invfact[i+1]*(i+1) % MOD;
 }
 long long nCr(int n,int r){
