@@ -14,8 +14,7 @@ int slidingWindow(vector<int>& nums, int k) {
     rep(r, 0, n) {
         freq[nums[r]]++;
 
-        // shrink if condition fails
-        while(/* condition_not_satisfied(freq) */) {
+        while(freq.size() > k) {
             freq[nums[l]]--;
             if(freq[nums[l]] == 0) freq.erase(nums[l]);
             l++;
