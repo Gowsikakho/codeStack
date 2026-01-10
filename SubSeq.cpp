@@ -18,6 +18,22 @@ void generateSubsequences(const string &s, string current, int index, vector<str
     generateSubsequences(s, current + s[index], index + 1, result);
 }
 
+void generateSubsequences(string s) {
+    int n = s.length();
+
+    for (int mask = 0; mask < (1 << n); mask++) {
+        string subseq = "";
+
+        for (int i = 0; i < n; i++) {
+            if (mask & (1 << i)) {
+                subseq += s[i];
+            }
+        }
+
+        cout << subseq << endl;
+    }
+}
+
 int main() {
     string s;
     cout << "Enter a string: ";
