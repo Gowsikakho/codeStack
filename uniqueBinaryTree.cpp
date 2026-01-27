@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Tree node definition
+// ---------------- Tree Node ----------------
 struct TreeNode {
     int val;
     TreeNode* left;
@@ -13,41 +13,68 @@ struct TreeNode {
     }
 };
 
+// ---------------- Solution Class ----------------
 class Solution {
 public:
-    unordered_map<int, int> inorderIndex;
-    int preIdx = 0;
+    unordered_map<int, int> inMap;
 
-    TreeNode* build(int start, int end, vector<int>& preorder) {
-        // no elements to build
-        if (start > end) return nullptr;
+    // ===== 1. Build from PREORDER + INORDER =====
+    int preIdx;
 
-        // current root from preorder
+    TreeNode* buildPreIn(int st, int end, vector<int>& preorder) {
+        if (st > end) return nullptr;
+
         int rootVal = preorder[preIdx++];
         TreeNode* root = new TreeNode(rootVal);
 
-        // find root in inorder
-        int idx = inorderIndex[rootVal];
+        int idx = inMap[rootVal];
 
-        // build left then right
-        root->left  = build(start, idx - 1, preorder);
-        root->right = build(idx + 1, end, preorder);
+        root->left  = buildPreIn(st, idx - 1, preorder);
+        root->right = buildPreIn(idx + 1, end, preorder);
 
         return root;
     }
 
-    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        int n = inorder.size();
+    TreeNode* buildTreeFromPreIn(vector<int>& preorder, vector<int>& inorder) {
+        inMap.clear();
+        preIdx = 0;
 
-        // store inorder value -> index
-        for (int i = 0; i < n; i++)
-            inorderIndex[inorder[i]] = i;
+        for (int i = 0; i < inorder.size(); i++)
+            inMap[inorder[i]] = i;
 
-        return build(0, n - 1, preorder);
+        return buildPreIn(0, inorder.size() - 1, preorder);
+    }
+
+    // ===== 2. Build from POSTORDER + INORDER =====
+    int postIdx;
+
+    TreeNode* buildPostIn(int st, int end, vector<int>& postorder) {
+        if (st > end) return nullptr;
+
+        int rootVal = postorder[postIdx--];
+        TreeNode* root = new TreeNode(rootVal);
+
+        int idx = inMap[rootVal];
+
+        // build RIGHT first
+        root->right = buildPostIn(idx + 1, end, postorder);
+        root->left  = buildPostIn(st, idx - 1, postorder);
+
+        return root;
+    }
+
+    TreeNode* buildTreeFromPostIn(vector<int>& postorder, vector<int>& inorder) {
+        inMap.clear();
+        postIdx = postorder.size() - 1;
+
+        for (int i = 0; i < inorder.size(); i++)
+            inMap[inorder[i]] = i;
+
+        return buildPostIn(0, inorder.size() - 1, postorder);
     }
 };
 
-// Helper: print inorder (to verify)
+// ---------------- Traversal Helpers ----------------
 void printInorder(TreeNode* root) {
     if (!root) return;
     printInorder(root->left);
@@ -55,16 +82,32 @@ void printInorder(TreeNode* root) {
     printInorder(root->right);
 }
 
-// Main function
+void printPostorder(TreeNode* root) {
+    if (!root) return;
+    printPostorder(root->left);
+    printPostorder(root->right);
+    cout << root->val << " ";
+}
+
+// ---------------- Main ----------------
 int main() {
-    vector<int> preorder = {3, 9, 20, 15, 7};
-    vector<int> inorder  = {9, 3, 15, 20, 7};
-
     Solution sol;
-    TreeNode* root = sol.buildTree(preorder, inorder);
 
-    cout << "Inorder traversal of constructed tree:\n";
-    printInorder(root);
+    vector<int> inorder   = {9, 3, 15, 20, 7};
+    vector<int> preorder  = {3, 9, 20, 15, 7};
+    vector<int> postorder = {9, 15, 7, 20, 3};
+
+    // Build using Preorder + Inorder
+    TreeNode* root1 = sol.buildTreeFromPreIn(preorder, inorder);
+    cout << "Inorder (from Pre+In): ";
+    printInorder(root1);
+    cout << "\n";
+
+    // Build using Postorder + Inorder
+    TreeNode* root2 = sol.buildTreeFromPostIn(postorder, inorder);
+    cout << "Postorder (from Post+In): ";
+    printPostorder(root2);
+    cout << "\n";
 
     return 0;
 }
